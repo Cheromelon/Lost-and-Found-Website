@@ -1,6 +1,7 @@
 const path=require('path') //core module
 const express=require('express') //external module
 const user_router=require('./routes/user_router')
+const auth_router=require('./routes/auth_router')
 
 const app=express()
 app.set('view engine','ejs');
@@ -9,6 +10,7 @@ app.use(express.static(path.join(__dirname, "public"))); //to access public fold
 
 
 app.use('/',user_router)
+app.use('/auth',auth_router)
 
 const PORT=4000
 app.listen(PORT,()=>{
