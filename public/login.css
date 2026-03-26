@@ -148,3 +148,7 @@ body {
         font-size: 28px;
     }
 }
+.message{
+    text-align: center;
+    margin-top:10px;
+}

@@ -12,10 +12,18 @@
             <div class="name"><p>Campus Lost & Found</p></div>
             <div class="item-login">
                 <div class="item">
-                    <a href="/items/new"><p>Add-Item</p></a>
+                    <% if(isLoggedIn) { %>
+                        <a href="/items/new"><p>Add-Item</p></a>
+                    <% } else { %>
+                        <a href="/auth/login"><p>Add-Item</p></a>
+                    <% } %>
                 </div>
                 <div class="login">
-                    <a href="/auth/login"><p>Login</p></a>
+                    <% if (isLoggedIn) { %>
+                        <a href="/auth/logout"><p>Logout</p></a>
+                    <% } else{ %>
+                        <a href="/auth/login"><p>Login</p></a>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -28,8 +36,8 @@
             </div>
         </div>
         <div class="tabs">
-            <a href="lost-items" class="tab-lost"><p>Lost Items</p></a>
-            <a href="found-items" class="tab-found"><p>Found Items</p></a>
+            <a href="/lost-items" class="tab-lost"><p>Lost Items</p></a>
+            <a href="/found-items" class="tab-found"><p>Found Items</p></a>
         </div>
     </main>
 </body>
