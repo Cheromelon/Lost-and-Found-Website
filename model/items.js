@@ -9,13 +9,13 @@ const item=mongoose.Schema({
     location:String,
     description:String,
     contact:String,
-    userID:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User",
-    },
     image:{
         url:String,
         filename:String,
+    },
+    userID:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"credentials",
     }
-})
+},{timestamps:true})
 module.exports=mongoose.model("items",item)

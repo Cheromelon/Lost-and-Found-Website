@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/home.css">
-    <title>Home</title>
+    <title>Campus Lost & Found</title>
 </head>
 <body>
     <header>
@@ -13,31 +13,86 @@
             <div class="item-login">
                 <div class="item">
                     <% if(isLoggedIn) { %>
-                        <a href="/items/add"><p>Add-Item</p></a>
+                        <a href="/items/add"><p>Add Item</p></a>
                     <% } else { %>
-                        <a href="/auth/login"><p>Add-Item</p></a>
+                        <a href="/auth/login"><p>Add Item</p></a>
                     <% } %>
                 </div>
                 <div class="login">
                     <% if (isLoggedIn) { %>
                         <a href="/auth/logout"><p>Logout</p></a>
-                    <% } else{ %>
+                    <% } else { %>
                         <a href="/auth/login"><p>Login</p></a>
                     <% } %>
                 </div>
             </div>
         </div>
     </header>
+
     <main>
+        <% if (!type) { %>
         <div class="hero-img">
             <div class="img">
                 <p class="hero-title">Lost Something? We Can Help!</p>
                 <p class="hero-sub">Connect lost items with their owners in our campus community</p>
             </div>
         </div>
+        <% } %>
+
         <div class="tabs">
-            <a href="/lost-items" class="tab-lost"><p>Lost Items</p></a>
-            <a href="/found-items" class="tab-found"><p>Found Items</p></a>
+            <a href="/items/lost"  class="tab-lost  <%= type === 'lost'  ? 'tab-active' : '' %>"><p>Lost Items</p></a>
+            <a href="/items/found" class="tab-found <%= type === 'found' ? 'tab-active' : '' %>"><p>Found Items</p></a>
+            <% if (isLoggedIn) { %>
+                <a href="/items/my_items" class="my-items <%= type === 'my' ? 'tab-active' : '' %>"><p>My Items</p></a>
+            <% } %>
+        </div>
+
+        <% if (type) { %>
+        <div class="status-message">
+            <% if (items && items.length > 0) { %>
+                <% if (type === 'my') { %>
+                    <p>Your Items</p>
+                <% } else { %>
+                    <p><%= type.charAt(0).toUpperCase() + type.slice(1) %> Items</p>
+                <% } %>
+            <% } else { %>
+                <% if (type === 'my') { %>
+                    <p>You haven't added any items yet</p>
+                <% } else { %>
+                    <p>No <%= type %> items found</p>
+                <% } %>
+            <% } %>
+        </div>
+        <% } %>
+
+        <div class="item-container">
+            <% if (items && items.length > 0) { %>
+                <% items.forEach(item => { %>
+                    <div class="item-card">
+
+                        <% if (item.userID && item.userID.email) { %>
+                            <p class="poster-name"><%= item.userID.email.split('@')[0] %></p>
+                        <% } %>
+
+                        <% if (item.image && item.image.url) { %>
+                            <img src="<%= item.image.url %>" class="item-img" alt="Item image">
+                        <% } else { %>
+                            <div class="no-image">No Image Available</div>
+                        <% } %>
+
+                        <div class="item-details">
+                            <p><span class="detail-icon"></span><span class="detail-label">Location: </span><%= item.location %></p>
+                            <p><span class="detail-icon"></span><span class="detail-label">Description: </span><%= item.description %></p>
+                            <p><span class="detail-icon"></span><span class="detail-label">Contact: </span><%= item.contact %></p>
+                        </div>
+                        <% if (type === 'my') { %>
+                            <form action="/items/<%= item._id %>" method="POST" class="delete-form">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                        <% } %>
+                    </div>
+                <% }) %>
+            <% } %>
         </div>
     </main>
 </body>
