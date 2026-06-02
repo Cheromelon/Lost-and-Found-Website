@@ -15,26 +15,46 @@ function isloggedIN(req,res,next){
 item_router.get('/add',isloggedIN,(req,res)=>{
     res.sendFile(path.join(__dirname,"..","views","add_items.html"))
 })
-item_router.post('/add',isloggedIN,upload.single('image'),async(req,res)=>{
-    try{
-        const new_item=new item({
-            type:req.body.type,
-            location:req.body.location,
-            description:req.body.description,
-            contact:req.body.contact,
-            image:req.file?{
-                url:req.file.path,
-                filename:req.file.filename
-            }:null,
-            userID:req.session.userID
-        })
+item_router.post('/add', isloggedIN, (req, res, next) => {
+
+    upload.single('image')(req, res, (err) => {
+        if (err) {
+            console.error("UPLOAD ERROR:");
+            console.error(err);
+            return res.send(err.message || "Upload failed");
+        }
+        next();
+    });
+
+}, async (req, res) => {
+
+    try {
+        console.log("BODY:", req.body);
+        console.log("FILE:", req.file);
+
+        const new_item = new item({
+            type: req.body.type,
+            location: req.body.location,
+            description: req.body.description,
+            contact: req.body.contact,
+            image: req.file ? {
+                url: req.file.path,
+                filename: req.file.filename
+            } : null,
+            userID: req.session.userID
+        });
+
         await new_item.save();
-        console.log('item saved successfully')
-        return res.redirect('/')
-    } catch(err){
-        console.log(err)
+
+        console.log("item saved successfully");
+        return res.redirect('/');
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
     }
-})
+
+});
 
 item_router.get('/lost',async(req,res)=>{
     const lost_items=await item.find({type:'lost'}).populate('userID','email')
